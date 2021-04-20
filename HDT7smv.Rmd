@@ -1,0 +1,44 @@
+---
+title: "HDT7SVM"
+author: "Ayleen Rubio 19003, Andrés Say 19705, Andreé Toledo 18439"
+date: "19/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#Ingebor Rubio/Desktop/Trabajos/Quinto Semestre/Mineria/HDT7SVM
+
+knitr::opts_knit$set(root.dir="C:/Users/Ingebor Rubio/Desktop/Trabajos/Quinto Semestre/Mineria/HDT7SVM")
+```
+
+# Hoja de Trabajo No. 7: Máquinas Vectoriales de Soporte
+
+En esta hoja de trabajo se busca poder clasificar una casa según su precio de venta, esto en tres posibles rangos: económicas, intermedias y caras. Para hacer esta predicción se buscará un modelo de SVM que haga una mejor clasificación, por lo que se han escogido las variables numéricas para plantear los modelos.
+
+```{r data, echo=FALSE}
+datosCasas <- read.csv("train.csv")
+library(caret)
+library(e1071)
+
+porciento <- 70/100
+
+set.seed(123)
+
+datosCasas$clasificacion <- ifelse(datosCasas$SalePrice <= 251000, "Economicas", ifelse(datosCasas$SalePrice <= 538000, "Intermedias", ifelse(datosCasas$SalePrice <= 755000, "Caras")))
+
+datos <- datosCasas[,c(2,4,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,53,55,57,60,62,63,67,68,69,70,71,72,76,77,78,82)]
+datos <- datos[,colSums(is.na(datos))==0]
+
+trainRowsNumber<-sample(nrow(datos),porciento*nrow(datos))
+train<-datos[trainRowsNumber,]
+test<-datos[-trainRowsNumber,]
+```
+
+Luego de escoger los grupos de entrenamiento y prueba, se planteará el modelo:
+
+```{r modelo, echo=FALSE}
+#Error en esto
+modelosvm <- svm(clasificacion~., data = train, scale = F)
+```
+
