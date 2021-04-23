@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 #Ingebor Rubio/Desktop/Trabajos/Quinto Semestre/Mineria/HDT7SVM
 
-knitr::opts_knit$set(root.dir="C:/Users/Ingebor Rubio/Desktop/Trabajos/Quinto Semestre/Mineria/HDT7SVM")
+knitr::opts_knit$set(root.dir="C:/Users/andre/OneDrive/Documentos/3er año/1er semestre/Minería de datos/proyecto/HDT7SVM")
 ```
 
 # Hoja de Trabajo No. 7: Máquinas Vectoriales de Soporte
@@ -40,12 +40,14 @@ Luego de escoger los grupos de entrenamiento y prueba, se planteará el modelo:
 
 ```{r modelo, echo=FALSE}
 modelosvm <- svm(y~., data = train, scale = F)
+#View(test)
 summary(modelosvm)
 modelosvm$index
-plot(modelosvm,train,Petal.Length~Sepal.Length)
+plot(modelosvm,train,GrLivArea~GarageArea)
+#plot(modelosvm,train,Petal.Length~Sepal.Length)"
 ```
 
-Puede observarse que el tipo de kernel utilizado es el radial, con un costo de 1, un valor de gamma de 0.031 y un valor de epsilon de 0.1, todo esto con 1021 vectores de soporte.
+Puede observarse que el tipo de kernel utilizado es el radial, con un costo de 1, un valor de gamma de 0.031 y un valor de epsilon de 0.1, todo esto con 1021 vectores de soporte. Adicionalmente, se puede observar que en la gráfica mostrada, el modelo clasifica la mayoría de las casas como económicas 
 A continuación se hará la generación de diferentes modelos.
 
 ```{r model2, echo=FALSE}
@@ -101,3 +103,10 @@ confusionMatrix(test$y, predMejorModelo)
 Con el modelo tuneado, que es el que se basa en el mejor modelo, hemos tenido un porcentaje de acierto de 94.31%, se han cometido errores en la prediccion de 1 casa cara, 7 casas económicas y 17 casas intermedias, cometiendo un total de 25 errores.
 
 Podemos observar que, igualmente, se sigue manteniendo como mejor modelo el que utiliza un kernel lineal con un costo de 0.5, con un porcentaje de acierto de 94.99%.
+
+```{r modeloConclusion, echo=FALSE}
+#View(train)
+plot(modelosSVM_L,train,GrLivArea~GarageArea)
+```
+
+Realizando la misma gráfica del comienzo con el modelo más óptimo, se puede notar que en su mayoría sigue clasificando gran cantidad de las casas como económicas.
