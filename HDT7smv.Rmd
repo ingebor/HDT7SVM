@@ -112,6 +112,6 @@ plot(modelosSVM_L,train,GrLivArea~GarageArea)
 Realizando la misma gráfica del comienzo con el modelo más óptimo, se puede notar que en su mayoría sigue clasificando gran cantidad de las casas como económicas.
 
 ## comparacion
-El mejor modelo fue el modelo 4 kernel lineal, que tiene un accuracy de 0.9499. a comparación del Random Forest que poseía un accuracy del 0.72, el algoritmo de bayes mostró 0.467 y el arbol de decisión (este falta Andreé no lo encontré)
+El mejor modelo fue el modelo 4 kernel lineal, que tiene un accuracy de 0.9499. a comparación del Random Forest que poseía un accuracy del 0.985, el algoritmo de bayes mostró 0.467 y el arbol de decisión (este falta Andreé no lo encontré)
 
 ## Informe de resultados
