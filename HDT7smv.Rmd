@@ -27,7 +27,8 @@ set.seed(123)
 
 datosCasas$clasificacion <- ifelse(datosCasas$SalePrice <= 251000, "Economicas", ifelse(datosCasas$SalePrice <= 538000, "Intermedias", ifelse(datosCasas$SalePrice <= 755000, "Caras")))
 
-datos <- datosCasas[,c(2,4,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,53,55,57,60,62,63,67,68,69,70,71,72,76,77,78,82)]
+datosCasas$y <- as.numeric(factor(datosCasas$clasificacion))
+datos <- datosCasas[,c(2,4,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,53,55,57,60,62,63,67,68,69,70,71,72,76,77,78,83)]
 datos <- datos[,colSums(is.na(datos))==0]
 
 trainRowsNumber<-sample(nrow(datos),porciento*nrow(datos))
@@ -39,6 +40,11 @@ Luego de escoger los grupos de entrenamiento y prueba, se planteará el modelo:
 
 ```{r modelo, echo=FALSE}
 #Error en esto
-modelosvm <- svm(clasificacion~., data = train, scale = F)
+modelosvm <- svm(y~., data = train, scale = F)
+summary(modelosvm)
+modelosvm$index
+plot(modelosvm,train,Petal.Length~Sepal.Length)
 ```
 
+Puede observarse que el tipo de kernel utilizado es el radial, con un costo de 1, un valor de gamma de 0.031 y un valor de epsilon de 0.1, todo esto con 1021 vectores de soporte.
+A continuación se hará la generación de diferentes modelos.
