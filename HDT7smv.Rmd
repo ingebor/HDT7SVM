@@ -27,7 +27,7 @@ set.seed(123)
 
 datosCasas$clasificacion <- ifelse(datosCasas$SalePrice <= 251000, "Economicas", ifelse(datosCasas$SalePrice <= 538000, "Intermedias", ifelse(datosCasas$SalePrice <= 755000, "Caras")))
 
-datosCasas$y <- as.numeric(factor(datosCasas$clasificacion))
+datosCasas$y <- factor(datosCasas$clasificacion)
 datos <- datosCasas[,c(2,4,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,53,55,57,60,62,63,67,68,69,70,71,72,76,77,78,83)]
 datos <- datos[,colSums(is.na(datos))==0]
 
@@ -39,7 +39,6 @@ test<-datos[-trainRowsNumber,]
 Luego de escoger los grupos de entrenamiento y prueba, se planteará el modelo:
 
 ```{r modelo, echo=FALSE}
-#Error en esto
 modelosvm <- svm(y~., data = train, scale = F)
 summary(modelosvm)
 modelosvm$index
@@ -48,3 +47,57 @@ plot(modelosvm,train,Petal.Length~Sepal.Length)
 
 Puede observarse que el tipo de kernel utilizado es el radial, con un costo de 1, un valor de gamma de 0.031 y un valor de epsilon de 0.1, todo esto con 1021 vectores de soporte.
 A continuación se hará la generación de diferentes modelos.
+
+```{r model2, echo=FALSE}
+modelosSVM_L <-svm(y~. , data = train, cost = 2^5, kernel = "linear")
+prediccionL<- predict(modelosSVM_L,newdata=test[,1:32])
+confusionMatrix(test$y,prediccionL)
+```
+
+Con un modelo en el que el kernel es linear y el costo es 2^5, hemos tenido un porcentaje de acierto de 94.31%. En este caso se han clasificado incorrectamente 1 casa cara, 8 casas económicas y 16 casas intermedias, cometiendo un total de 25 errores.
+
+```{r model3, echo=FALSE}
+modelosSVM_L <-svm(y~. , data = train, cost = 2^-5, kernel = "linear")
+prediccionL<- predict(modelosSVM_L,newdata=test[,1:32])
+confusionMatrix(test$y,prediccionL)
+```
+
+Con un modelo en el que el kernel es linear y el costo es 2^-5, hemos tenido un porcentaje de acierto de 94.53%. En este caso se han clasificado incorrectamente 1 casa cara, 5 casas económicas y 18 casas intermedias, cometiendo un total de 24 errores.
+
+```{r model4, echo=FALSE}
+modelosSVM_L <-svm(y~. , data = train, cost = 0.5, kernel = "linear")
+prediccionL<- predict(modelosSVM_L,newdata=test[,1:32])
+confusionMatrix(test$y,prediccionL)
+```
+
+Con un modelo en el que el kernel es linear y el costo es 0.5, hemos tenido un porcentaje de acierto de 94.99%. En este caso se han clasficiado incorrectamente 1 casa cara, 6 casas económicas y 15 casas intermedias, cometiendo un total de 22 errores, este es el modelo lineal que menos errores ha cometido.
+
+```{r model5, echo=FALSE}
+modelosSVM_R <-svm(y~. , data = train, cost = 2^-5, kernel = "radial")
+prediccionR<- predict(modelosSVM_R,newdata=test[,1:32])
+confusionMatrix(test$y,prediccionR)
+```
+
+Con un modelo en el que el kernel es radial y el costo es 2^-5, hemos tenido un porcentaje de acierto de 84.74%. En este caso se ha cometido errores al clasificar 1 casa cara y 66 casas intermedias, en este modelo se han cometido 67 errores, clasificando todas como económicas.
+
+```{r model6, echo=FALSE}
+modelosSVM_R <-svm(y~. , data = train, cost = 2^1, kernel = "radial")
+prediccionR<- predict(modelosSVM_R,newdata=test[,1:32])
+confusionMatrix(test$y,prediccionR)
+```
+
+Con un modelo en el que el kernel es radial y el costo es 2^1, hemos tenido un porcentaje de acierto de 94.53%. En este caso se han cometido errores al clasificar 1 casa cara, 6 casas económicas y 17 casas intermedias, contando con un total de 24 errores, por lo que es el que mejor predice de los lineales, pero aún no llegar a predecir mejor que cualquier otro modelo.
+
+Luego de haber hecho distintos modelos, podemos concluir que el que tiene un porcentaje de acierto más alto, 94.99%, es el que utiliza un kernel lineal con un costo de 0.5, por lo que utilizaremos este modelo como reeferencia.
+
+A continuación se hará un modelo tuneado con diferentes valores de costo, utilizando un modelo lineal ya que es el que ha demostrado hacer une mejor predicción.
+
+```{r modelDef, echo=FALSE}
+modeloTuneado <- tune.svm(y~. , data = train, cost = c(0.01,0.1,0.5,1,5,10,16,20,32), kernel = "linear")
+predMejorModelo <- predict(modeloTuneado$best.model, newdata = test[,1:32])
+confusionMatrix(test$y, predMejorModelo)
+```
+
+Con el modelo tuneado, que es el que se basa en el mejor modelo, hemos tenido un porcentaje de acierto de 94.31%, se han cometido errores en la prediccion de 1 casa cara, 7 casas económicas y 17 casas intermedias, cometiendo un total de 25 errores.
+
+Podemos observar que, igualmente, se sigue manteniendo como mejor modelo el que utiliza un kernel lineal con un costo de 0.5, con un porcentaje de acierto de 94.99%.
