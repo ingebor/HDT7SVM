@@ -21,6 +21,7 @@ En esta hoja de trabajo se busca poder clasificar una casa según su precio de v
 datosCasas <- read.csv("train.csv")
 library(caret)
 library(e1071)
+library(tree)
 library(randomForest)
 install.packages("e1071")
 
