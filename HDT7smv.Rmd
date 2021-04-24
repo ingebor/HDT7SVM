@@ -8,8 +8,9 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 #Ingebor Rubio/Desktop/Trabajos/Quinto Semestre/Mineria/HDT7SVM
+#"C:/Users/Andreé Toledo/Documents/GitHub/HDT7SVM"
 
-knitr::opts_knit$set(root.dir="C:/Users/andre/OneDrive/Documentos/3er año/1er semestre/Minería de datos/proyecto/HDT7SVM")
+knitr::opts_knit$set(root.dir="C:/Users/Andreé Toledo/Documents/GitHub/HDT7SVM")
 ```
 
 # Hoja de Trabajo No. 7: Máquinas Vectoriales de Soporte
@@ -20,6 +21,8 @@ En esta hoja de trabajo se busca poder clasificar una casa según su precio de v
 datosCasas <- read.csv("train.csv")
 library(caret)
 library(e1071)
+library(rpart)
+install.packages("e1071")
 
 porciento <- 70/100
 
@@ -107,11 +110,32 @@ Podemos observar que, igualmente, se sigue manteniendo como mejor modelo el que 
 ```{r modeloConclusion, echo=FALSE}
 #View(train)
 plot(modelosSVM_L,train,GrLivArea~GarageArea)
+
+
+```
+
+```{r arboles , echo=FALSE}
+datosCasas <- read.csv("train.csv")
+set.seed(71)
+iris.rf <- randomForest(Species ~ ., data=iris, importance=TRUE,
+                        proximity=TRUE)
+print(iris.rf)
+
 ```
 
 Realizando la misma gráfica del comienzo con el modelo más óptimo, se puede notar que en su mayoría sigue clasificando gran cantidad de las casas como económicas.
 
-## comparacion
-El mejor modelo fue el modelo 4 kernel lineal, que tiene un accuracy de 0.9499. a comparación del Random Forest que poseía un accuracy del 0.985, el algoritmo de bayes mostró 0.467 y el arbol de decisión (este falta Andreé no lo encontré)
+## Comparación
+El mejor modelo fue el modelo 4 kernel lineal, que tiene un accuracy de 0.9499. a comparación del Random Forest que poseía un accuracy del 0.985, el algoritmo de bayes mostró 0.467 y el arbol de decisión en 0.8491.
+
+En cuanto al árbol de regresión prsenta una precisión del 0.0109% lo cual indica que es una precisión muy mala debido a que el árbol trata de predecir el precio exacto de la casa. En comparación a SVM con kernel, demuestran que al ser tan buenos con la clasificación  de datos usando el hiperplano para separar los datos en más de dos dimensiones.
+
+El árbol de clasificación por su parte, existe una mejora ya que no trata de ser tan exacto y se demuestra en el 70% de precisión pero comparado al método SVM sigue siendo mejor en cada variante de kernels donde muestra valores arriba del 85%.
+
+Por último, random forest es el mejor árbol ya que se obtuvo un resultado más favorable con una precisión de 83.01%, aún así SVM continua superandólo en precisión.
 
 ## Informe de resultados
+
+Calculando el porcentaje de eficiencia de los métodos, SVM tienen 96%  y 94% de eficiencia, por otro lado el método Naive Bayes tienen 73% de aciertos. En este ejemplo se observa que el método es eficiente para hacer clasificaciones, en este último ejemplo se tienen 58 variables no todas siguen comportamientos lineales, por lo cual tomar un kernel no lineal para  SVM  resulta apropiado.
+
+Lo que se observa es que SVM puede servir como un método de clasificación para dos clases, pero también es adecuado para construir un modelo para clasificar para más de dos clases.
